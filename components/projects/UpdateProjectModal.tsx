@@ -11,7 +11,6 @@ import {
   Text,
   Input,
 } from "@chakra-ui/react";
-import axios from "axios";
 import { UserData } from "@/data";
 import { useProjectStore } from "@/zustand-store/project";
 import { useTaskStore } from "@/zustand-store/task";
@@ -26,27 +25,25 @@ import {
   SelectTeam,
 } from "@/components/common";
 import AddTask from "../common/TaskCRUD/AddTask";
-import { useProjects } from "@/hooks/getProjects";
-import { useUserData } from "@/hooks/getUserData";
-import { useTasks } from "@/hooks/getTasks";
-import { useUserStore } from "@/zustand-store/user";
+import {
+  useFetchProjectByTitle,
+  useProjects,
+} from "@/hooks/projects/getProjects";
+import { useTasks } from "@/hooks/tasks/getTasks";
+import { updateProjectData } from "@/hooks/projects/updatedProjectData";
+import { useMutation } from "react-query";
 
 type UpdateProjectModalProps = {
   title: string;
   isOpen: boolean;
   onClose: () => void;
 };
-const UpdateProjectModal = ({
-  title,
-  isOpen,
-  onClose,
-}: UpdateProjectModalProps) => {
+const UpdateProjectModal = ({ title, isOpen, onClose }: any) => {
   const {
-    // title,
     description,
     status,
     createdBy,
-    teamMembers,
+    // teamMembers,
     startDate,
     dueDate,
     selectedColor,
@@ -59,72 +56,64 @@ const UpdateProjectModal = ({
   const { tag, tagList } = useTagStore();
 
   const { data: ProjectsData } = useProjects();
-  // const { data: UserData } = useUserData();
+  const { data: projectByTitle } = useFetchProjectByTitle(title);
   const { data: TasksData } = useTasks();
+
+  const teamMembers = [{ name: "team1" }, { name: "team2" }, { name: "team3" }];
+  const mutation = useMutation(updateProjectData);
 
   const handleUpdate = async () => {
     try {
-      axios
-        .put(`/api/project/put_project`, {
-          title,
-        })
-        .then((res) => {
-          console.log("response is" + res);
-        })
-        .catch((err) => console.log("err is" + err));
-      console.log(title);
+      await mutation.mutateAsync({
+        title,
+        description,
+        status,
+        startDate,
+        dueDate,
+        createdBy,
+        teamMembers,
+        tasks: taskList,
+        tags: tagList,
+      });
+      console.log("done");
     } catch (e) {
-      console.error("error is" + e);
+      console.error("Error updating title:", e);
+      console.log("not done");
     }
   };
 
-  const handleAddProject = async () => {
-    try {
-      axios
-        .post(`/api/project/set_project`, {
-          title,
-          description,
-          status,
-          createdBy,
-          teamMembers,
-          startDate,
-          dueDate,
-          tags: tagList,
-          tasks: taskList,
-        })
-        .then((res) => {
-          console.log("response is 1" + res.data);
-        })
-        .catch((err) => console.log("err is" + err));
-    } catch (e) {
-      console.error("error is" + e);
-    }
-  };
-
-  const handleCheckboxClick = (userName: string) => {
-    if (teamMembers.includes(userName)) {
-      const updatedTeamMembers = teamMembers.filter(
-        (member: string) => member !== userName
-      );
-      setTeamMembers(updatedTeamMembers);
-      console.log(userName + " is removed");
-    } else {
-      setTeamMembers([...teamMembers, userName]);
-      console.log(userName + " is added");
-    }
-  };
+  // const handleCheckboxClick = (userName: string) => {
+  //   if (teamMembers.includes(userName)) {
+  //     const updatedTeamMembers = teamMembers.filter(
+  //       (member: string) => member !== userName
+  //     );
+  //     setTeamMembers(updatedTeamMembers);
+  //     console.log(userName + " is removed");
+  //   } else {
+  //     setTeamMembers([...teamMembers, userName]);
+  //     console.log(userName + " is added");
+  //   }
+  // };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Add new Project</ModalHeader>
+        <ModalHeader>Update {title} Project</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <Text as="label" textAlign="left" w="xs" fontSize="12">
             title
           </Text>
           <Input placeholder="title" value={title} />
+
+          {/* <InputField
+            placeholder="title"
+            label="Title"
+            field={title}
+            setField={setTitle}
+          /> */}
+
           <InputField
             placeholder="description"
             label="Description"
@@ -136,8 +125,8 @@ const UpdateProjectModal = ({
           <CreatedBy createdBy={createdBy} data={UserData} />
           <SelectTeam
             data={UserData}
-            team={teamMembers}
-            handleCheckboxClick={handleCheckboxClick}
+            teamMembers={teamMembers}
+            // handleCheckboxClick={handleCheckboxClick}
           />
 
           <Text as="label" textAlign="left" w="xs" fontSize="12">
@@ -154,7 +143,7 @@ const UpdateProjectModal = ({
         <ModalFooter>
           <Button
             onClick={() => {
-              handleUpdate; // onClose();
+              handleUpdate(); // onClose();
             }}
             colorScheme="blue"
             mr={3}
@@ -168,3 +157,56 @@ const UpdateProjectModal = ({
 };
 
 export default UpdateProjectModal;
+
+// console.log(
+//   mutation.mutateAsync({
+//     title,
+//     description,
+//     status,
+//     startDate,
+//     dueDate,
+//     createdBy,
+//     teamMembers,
+//     tasks: taskList,
+//     tags: tagList,
+//   })
+// );
+
+// const handleAddProject = async () => {
+//   try {
+//     axios
+//       .post(`/api/project/set_project`, {
+//         title,
+//         description,
+//         status,
+//         createdBy,
+//         teamMembers,
+//         startDate,
+//         dueDate,
+//         tags: tagList,
+//         tasks: taskList,
+//       })
+//       .then((res) => {
+//         console.log("response is 1" + res.data);
+//       })
+//       .catch((err) => console.log("err is" + err));
+//   } catch (e) {
+//     console.error("error is" + e);
+//   }
+// };
+
+// const handleUpdate = async () => {
+//   try {
+//     axios
+//       .put(`/api/project/put_project`, {
+//         title: "new titlee",
+//       })
+//       .then((res) => {
+//         console.log("response is" + res);
+//       })
+//       .catch((err) => console.log("err is" + err));
+//     console.log(title);
+//   } catch (e) {
+//     console.error("error is" + e);
+//   }
+// };

@@ -8,14 +8,14 @@ const Tasks = () => {
   const [user] = useAuthState(auth);
   const router = useRouter();
 
-  useEffect(() => {
-    const userSession = localStorage.getItem("user");
-    if (!user && !userSession) {
-      router.push("/signin");
-    }
-  }, [user]);
+  // useEffect(() => {
+  //   const userSession = localStorage.getItem("user");
+  //   if (!user && !userSession) {
+  //     router.push("/signin");
+  //   }
+  // }, [user]);
 
-  return <div>{user && <TasksCard />}</div>;
+  return <div>{<TasksCard />}</div>;
 };
 
 export default Tasks;

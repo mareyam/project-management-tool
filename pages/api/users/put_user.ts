@@ -7,37 +7,47 @@ export default async function handler(req: any, res: any) {
     return;
   }
 
-  const { email, projects, tasks } = req.body;
+  const { email, projects, tasks, role } = req.body;
   console.log("Request Body:", req.body);
-  console.log(email + " " + projects + " " + tasks);
+  console.log(email + " " + projects + " " + tasks + " " + role);
 
   try {
     await connectMongoDB();
     const user = await User.findOne({ email });
+    console.log("user in put_user is " + user);
 
     if (!user) {
       res.status(404).send({ msg: "User not found" });
+      console.log("not found in put_user is " + user);
       return;
     }
 
-    const updatedProjects = [
-      ...user.projects,
-      ...projects.filter((project: string) => !user.projects.includes(project)),
-    ];
-    const updatedTasks = [
-      ...user.tasks,
-      ...tasks.filter((task: string) => !user.tasks.includes(task)),
-    ];
+    // const updatedProjects = [
+    //   ...user.projects,
+    //   ...projects.filter((project: string) => !user.projects.includes(project)),
+    // ];
+    // const updatedTasks = [
+    //   ...user.tasks,
+    //   ...tasks.filter((task: string) => !user.tasks.includes(task)),
+    // ];
+
+    // const updatedUser = await User.findOneAndUpdate(
+    //   { email },
+    //   { $set: { projects: updatedProjects, tasks: updatedTasks } },
+    //   { new: true }
+    // );
 
     const updatedUser = await User.findOneAndUpdate(
       { email },
-      { $set: { projects: updatedProjects, tasks: updatedTasks } },
+      // { projects: "projects", tasks: "tasks" }
+      { $set: { projects, tasks, role } },
       { new: true }
     );
-
+    console.log(" put_user is " + updatedUser);
     res.status(200).send(updatedUser);
   } catch (err) {
     console.error(err);
+    console.log(" error is " + err);
     res.status(400).send({ err, msg: "Something went wrong" });
   }
 }

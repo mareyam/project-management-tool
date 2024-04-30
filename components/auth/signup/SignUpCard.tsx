@@ -37,7 +37,7 @@ const SignUpCard = () => {
 
     try {
       axios
-        .post(`/api/set_user`, { email, role })
+        .post(`/api/users/set_user`, { email, role })
         .then((res) => {
           console.log("response is" + res);
         })

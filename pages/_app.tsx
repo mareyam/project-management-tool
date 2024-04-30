@@ -5,6 +5,7 @@ import { ChakraProvider, Grid, GridItem } from "@chakra-ui/react";
 // import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { QueryClient, QueryClientProvider } from "react-query";
 import Sidebar from "@/components/layout/Sidebar";
+import "../styles/globals.css";
 
 export default function App({ Component, pageProps }: AppProps) {
   const [showSidebar, setShowSidebar] = useState<boolean>(true);

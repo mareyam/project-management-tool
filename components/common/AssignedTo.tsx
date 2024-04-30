@@ -8,7 +8,7 @@ type AssignedToProps = {
 };
 const AssignedTo = ({ assignedTo, data }: AssignedToProps) => {
   const { setAssignedTo } = useTaskStore();
-
+console.log(assignedTo)
   return (
     <>
       <Text as="label" textAlign="left" w="xs" fontSize="12">

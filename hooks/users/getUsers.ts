@@ -2,7 +2,7 @@ import axios from "axios";
 import { useQuery } from "react-query";
 
 export const fetchUsers = async () => {
-  const { data } = await axios.get("http://localhost:3000/api/get_users");
+  const { data } = await axios.get("http://localhost:3000/api/users/get_users");
   return data;
 };
 
@@ -11,11 +11,11 @@ export const useUsers = () => {
 };
 
 const fetchUserProjects = async (email: string) => {
-  const { data } = await axios.get("http://localhost:3000/api/get_users");
+  const { data } = await axios.get("http://localhost:3000/api/users/get_users");
+  console.log(data);
   const clickedUser = data.find((user: any) => user.email === email);
   const userProjects = clickedUser ? clickedUser.projects : [];
-  // const userProjects = data.map((user: any) => user.projects + " ");
-  console.log("User projects:", userProjects);
+  console.log("Users:", userProjects);
   return userProjects;
 };
 

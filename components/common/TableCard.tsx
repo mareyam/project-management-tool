@@ -18,6 +18,7 @@ type TableCardProps = {
   data: { [key: string]: any }[];
   columns?: { key: keyof any; header: string }[];
   column?: string[];
+  record: string;
   handleDelete?: (id: string) => void;
   updateRecords: (email: string) => void;
 };
@@ -27,6 +28,7 @@ const TableCard = ({
   columns,
   handleDelete,
   updateRecords,
+  record,
 }: TableCardProps) => {
   const router = useRouter();
 
@@ -86,7 +88,15 @@ const TableCard = ({
                   </Button>
                   <Button
                     colorScheme="orange"
-                    onClick={() => updateRecords(row.email)}
+                    onClick={() => {
+                      record === "selectedEmail"
+                        ? updateRecords(row.email)
+                        : record === "selectedTitle"
+                        ? updateRecords(row.title)
+                        : record === "selectedTask"
+                        ? updateRecords(row.taskName)
+                        : updateRecords(row.taskName);
+                    }}
                   >
                     edit
                   </Button>

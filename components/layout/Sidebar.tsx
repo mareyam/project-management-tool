@@ -3,6 +3,7 @@ import { VStack, IconButton, Heading, HStack } from "@chakra-ui/react";
 import { IoLogoOctocat } from "react-icons/io5";
 import { MENU_ITEMS } from "./Routes";
 import SidebarMenuItem from "./SidebarMenuItem";
+import Marquee from "@/pages/test3";
 
 const Sidebar = () => {
   const [selectedMenu, setSelectedMenu] = useState<string>("");
@@ -11,7 +12,7 @@ const Sidebar = () => {
   };
 
   return (
-    <VStack cursor="pointer" alignItems="left" w="full">
+    <VStack cursor="pointer" alignItems="left" w="52">
       <HStack p="4">
         <IconButton
           aria-label="logo"
@@ -36,6 +37,7 @@ const Sidebar = () => {
           />
         ))}
       </VStack>
+      <Marquee />
     </VStack>
   );
 };

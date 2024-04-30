@@ -10,9 +10,9 @@ import {
   Button,
   Text,
 } from "@chakra-ui/react";
-import axios from "axios";
+import { useMutation } from "react-query";
 import { UserData } from "@/data";
-import { useTaskStore } from "@/zustand-store/task";
+import { PRIORITY, useTaskStore } from "@/zustand-store/task";
 import { useTagStore } from "@/zustand-store/tag";
 import {
   Tags,
@@ -23,17 +23,27 @@ import {
   CreatedBy,
   TaskDependency,
 } from "@/components/common";
+import { updateTaskData } from "@/hooks/tasks/updateTaskData";
+import Priority from "../common/Priority";
 
-type TaskModalProps = { isOpen: boolean; onClose: () => void };
-const TaskModal = ({ isOpen, onClose }: TaskModalProps) => {
+type UpdateTaskModalProps = {
+  taskName: string;
+  isOpen: boolean;
+  onClose: () => void;
+};
+const UpdateTaskModal = ({
+  taskName,
+  isOpen,
+  onClose,
+}: UpdateTaskModalProps) => {
   const {
-    task,
     description,
     status,
     createdBy,
     startDate,
     dueDate,
     assignedTo,
+    priority,
     dependency,
     dependencyList,
     setTask,
@@ -41,27 +51,23 @@ const TaskModal = ({ isOpen, onClose }: TaskModalProps) => {
   } = useTaskStore();
   const { tag, tagList } = useTagStore();
 
-  const handleAddTask = async () => {
+  const mutation = useMutation(updateTaskData);
+  const handleUpdate = async () => {
     try {
-      axios
-        .post(`/api/task/set_task`, {
-          taskName: task,
-          description,
-          status,
-          assignedTo,
-          startDate,
-          dueDate,
-          createdBy,
-          tags: tagList,
-          // dependencies: dependencyList,
-        })
-
-        .then((res) => {
-          console.log("response is " + res.data);
-        })
-        .catch((err) => console.log("err is" + err));
+      await mutation.mutateAsync({
+        taskName,
+        description,
+        status,
+        startDate,
+        dueDate,
+        createdBy,
+        assignedTo,
+        priority,
+        tags: tagList,
+        dependencies: dependencyList,
+      });
     } catch (e) {
-      console.error("error is" + e);
+      console.error("Error updating user:", e);
     }
   };
 
@@ -73,9 +79,9 @@ const TaskModal = ({ isOpen, onClose }: TaskModalProps) => {
         <ModalCloseButton />
         <ModalBody>
           <InputField
-            placeholder="Title"
-            label="Title"
-            field={task}
+            placeholder="task"
+            label="task"
+            field={taskName}
             setField={setTask}
           />
           <br />
@@ -88,8 +94,11 @@ const TaskModal = ({ isOpen, onClose }: TaskModalProps) => {
           <br />
           <Status status={status} />
           <DateSelection startDate={startDate} dueDate={dueDate} />
+
           <CreatedBy createdBy={createdBy} data={UserData} />
           <AssignedTo assignedTo={assignedTo} data={UserData} />
+          <Priority priority={priority} />
+
           <Tags tag={tag} tagList={tagList} />
           <TaskDependency
             dependency={dependency}
@@ -101,8 +110,13 @@ const TaskModal = ({ isOpen, onClose }: TaskModalProps) => {
         </ModalBody>
 
         <ModalFooter>
-          <Button colorScheme="blue" mr={3} onClick={handleAddTask}>
-            Done
+          <Button
+            colorScheme="blue"
+            mr={3}
+            disabled={mutation.isLoading}
+            onClick={handleUpdate}
+          >
+            {mutation.isLoading ? "Updating..." : "Update User"}
           </Button>
         </ModalFooter>
       </ModalContent>
@@ -110,7 +124,7 @@ const TaskModal = ({ isOpen, onClose }: TaskModalProps) => {
   );
 };
 
-export default TaskModal;
+export default UpdateTaskModal;
 
 /* //priority */
 

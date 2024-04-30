@@ -4,7 +4,7 @@ import { Button, useDisclosure } from "@chakra-ui/react";
 import ProjectModal from "./ProjectModal";
 import TableCard from "@/components/common/TableCard";
 import COLUMNS from "@/data/table-columns/project";
-import { useProjects } from "@/hooks/getProjects";
+import { useProjects } from "@/hooks/projects/getProjects";
 import UpdateProjectModal from "./UpdateProjectModal";
 
 const ProjectCard = () => {
@@ -25,15 +25,17 @@ const ProjectCard = () => {
       await axios.delete(`/api/project/delete_project`, {
         data: { _id: projectToDelete },
       });
-      // refetch();
+      refetch();
       data.filter((project: any) => project._id !== projectToDelete);
     } catch (error) {
       console.error("Error deleting project:", error);
     }
   };
 
-  const handleOpenUpdateProjectModal = (email: string) => {
-    setSelectedTitle(email);
+  const handleOpenUpdateProjectModal = (title: string) => {
+    setSelectedTitle(title);
+    console.log(title);
+    console.log("selected" + selectedTitle);
     onOpenUpdateModal();
   };
   return (
@@ -45,6 +47,7 @@ const ProjectCard = () => {
         columns={COLUMNS}
         handleDelete={handleDeleteProject}
         updateRecords={handleOpenUpdateProjectModal}
+        record={selectedTitle}
       />
       {isOpenUpdateModal && (
         <UpdateProjectModal

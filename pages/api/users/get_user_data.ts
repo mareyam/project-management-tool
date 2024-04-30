@@ -1,4 +1,4 @@
-// pages/api/get_user_data.ts
+// pages/api/users/get_user_data.ts
 
 import { connectMongoDB } from "@/lib/mongodb";
 import User from "@/models/UserModel";

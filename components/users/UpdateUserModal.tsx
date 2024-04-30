@@ -13,38 +13,34 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import SelectProject from "../common/SelectProject";
-import { useProjects } from "@/hooks/getProjects";
+import { useProjects } from "@/hooks/projects/getProjects";
 import SelectTask from "../common/SelectTask";
-import { useTasks } from "@/hooks/getTasks";
+import { useTasks } from "@/hooks/tasks/getTasks";
 import { useUserStore } from "@/zustand-store/user";
-import { useUserData } from "@/hooks/getUserData";
-import { useUserProjects } from "@/hooks/getUsers";
+import { useUserData } from "@/hooks/users/getUserData";
+import { useUserProjects } from "@/hooks/users/getUsers";
+import { updateUserData } from "@/hooks/users/updateUserData";
+import { useMutation } from "react-query";
 
 const UpdateUserModal = ({ email, isOpen, onClose }: any) => {
-  const { projectsList, taskList } = useUserStore();
+  const { projectsList, taskList, role } = useUserStore();
 
   const { data: ProjectsData } = useProjects();
   const { data: UserData } = useUserData();
   const { data: UserProject } = useUserProjects(email);
   const { data: TasksData } = useTasks();
 
-  console.log(ProjectsData);
-  console.log("UserProject");
-  console.log(UserProject);
+  const mutation = useMutation(updateUserData);
   const handleUpdate = async () => {
     try {
-      axios
-        .put(`/api/put_user`, {
-          email,
-          projects: projectsList,
-          tasks: taskList,
-        })
-        .then((res) => {
-          console.log("response is" + res);
-        })
-        .catch((err) => console.log("err is" + err));
+      await mutation.mutateAsync({
+        email,
+        role,
+        projectsList,
+        taskList,
+      });
     } catch (e) {
-      console.error("error is" + e);
+      console.error("Error updating user:", e);
     }
   };
 
@@ -53,7 +49,7 @@ const UpdateUserModal = ({ email, isOpen, onClose }: any) => {
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Add new User</ModalHeader>
+          <ModalHeader>update {email} details</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <Text as="label" textAlign="left" w="xs" fontSize="12">
@@ -61,22 +57,21 @@ const UpdateUserModal = ({ email, isOpen, onClose }: any) => {
             </Text>
             <Input placeholder="email" value={email} />
             <SelectProject
-              projectsList={projectsList}
-              data={ProjectsData}
+              projectsList={ProjectsData}
               selectedProjects={UserProject}
-              // handleCheckboxClick={handleSelectProject}
             />
             <br />
-            <SelectTask
-              selectedTask={taskList}
-              data={TasksData}
-              // handleSelectTask={handleSelectTask}
-            />
+            <SelectTask selectedTask={taskList} data={TasksData} />
             <br />
           </ModalBody>
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={handleUpdate}>
-              Done
+            <Button
+              colorScheme="blue"
+              mr={3}
+              disabled={mutation.isLoading}
+              onClick={handleUpdate}
+            >
+              {mutation.isLoading ? "Updating..." : "Update User"}
             </Button>
           </ModalFooter>
         </ModalContent>
@@ -86,6 +81,23 @@ const UpdateUserModal = ({ email, isOpen, onClose }: any) => {
 };
 
 export default UpdateUserModal;
+
+// const handleUpdate = async () => {
+//   try {
+//     axios
+//       .put(`/api/put_user`, {
+//         email,
+//         projects: projectsList,
+//         tasks: taskList,
+//       })
+//       .then((res) => {
+//         console.log("response is" + res);
+//       })
+//       .catch((err) => console.log("err is" + err));
+//   } catch (e) {
+//     console.error("error is" + e);
+//   }
+// };
 
 // const handleSelectProject = (project: any) => {
 //   if (projectsList.includes(project)) {

@@ -4,11 +4,11 @@ import { useProjectStore } from "@/zustand-store/project";
 
 type CreateByProps = {
   createdBy: string;
-  // data: Record<string, number | string | string[]>[];
   data: Record<string, any>[];
 };
 const CreatedBy = ({ createdBy, data }: CreateByProps) => {
   const { setCreatedBy } = useProjectStore();
+  console.log(createdBy);
 
   return (
     <>

@@ -4,7 +4,7 @@ import { Text } from "@chakra-ui/react";
 import { auth } from "@/utils/config";
 import { Projects } from "@/components/projects";
 import { useUserStore } from "@/zustand-store/user";
-import useLogout from "@/hooks/useLogout";
+import useLogout from "@/hooks/misc/useLogout";
 
 const Dashboard = () => {
   const [user] = useAuthState(auth);

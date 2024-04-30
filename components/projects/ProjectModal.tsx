@@ -101,7 +101,7 @@ const ProjectModal = ({ isOpen, onClose }: ProjectModalProps) => {
             setField={setTitle}
           />
           <InputField
-            placeholder="description"
+            placeholder="descrisption"
             label="Description"
             field={description}
             setField={setDescription}

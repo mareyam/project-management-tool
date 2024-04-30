@@ -9,14 +9,14 @@ const Projects = () => {
   const [user] = useAuthState(auth);
   const router = useRouter();
 
-  useEffect(() => {
-    const userSession = localStorage.getItem("user");
-    if (!user && !userSession) {
-      router.push("/signin");
-    }
-  }, [user]);
+  // useEffect(() => {
+  //   const userSession = localStorage.getItem("user");
+  //   if (!user && !userSession) {
+  //     router.push("/signin");
+  //   }
+  // }, [user]);
 
-  return <Box w="full">{user && <ProjectCard />}</Box>;
+  return <Box w="full">{<ProjectCard />}</Box>;
 };
 
 export default Projects;

@@ -8,7 +8,7 @@ type getUserDataProps = {
 
 export const fetchUserData = async (email: string) => {
   const response = await axios.get<getUserDataProps>(
-    `http://localhost:3000/api/get_user_data?email=${email}`
+    `http://localhost:3000/api/users/get_user_data?email=${email}`
   );
   const UserData = response.data;
   console.log(UserData);
@@ -22,7 +22,7 @@ export const useUserData = () => {
 // useEffect(() => {
 //   const fetchData = async () => {
 //     try {
-//       const response = await axios.get(`/api/get_user_data?email=${email}`);
+//       const response = await axios.get(`/api/users/get_user_data?email=${email}`);
 //       const userData = response.data;
 //       console.log("response is" + userData.projects);
 //       setSelectedProjects(userData.projects);

@@ -4,7 +4,7 @@ import axios from "axios";
 import TableCard from "@/components/common/TableCard";
 import UserModal from "./UserModal";
 import COLUMNS from "@/data/table-columns/users";
-import { useUsers } from "@/hooks/getUsers";
+import { useUsers } from "@/hooks/users/getUsers";
 import UpdateUserModal from "./UpdateUserModal";
 
 const UserCard = () => {
@@ -22,7 +22,7 @@ const UserCard = () => {
 
   const handleDeleteUser = async (userToDelete: string) => {
     try {
-      await axios.delete(`/api/delete_user`, {
+      await axios.delete(`/api/users/delete_user`, {
         data: { _id: userToDelete },
       });
       refetch();
@@ -33,6 +33,8 @@ const UserCard = () => {
   };
   const handleOpenUpdateUserModal = (email: string) => {
     setSelectedEmail(email);
+    console.log(email);
+    console.log(selectedEmail);
     onOpenUpdateModal();
   };
 
@@ -46,6 +48,7 @@ const UserCard = () => {
         columns={COLUMNS}
         handleDelete={handleDeleteUser}
         updateRecords={handleOpenUpdateUserModal}
+        record={selectedEmail}
       />
       {isOpenUpdateModal && (
         <UpdateUserModal

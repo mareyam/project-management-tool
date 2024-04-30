@@ -44,11 +44,7 @@ const taskSchema = new Schema(
     },
 
     dependencies: {
-      type: [
-        {
-          taskId: String,
-        },
-      ],
+      type: [String],
       required: false,
     },
     tags: {

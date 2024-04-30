@@ -10,16 +10,16 @@ type SelectTaskProps = {
 const SelectTask = ({ data, selectedTask }: SelectTaskProps) => {
   const { taskList, setTaskList } = useUserStore();
 
-  const handleSelectTask = (project: string) => {
-    if (taskList.includes(project)) {
+  const handleSelectTask = (task: string) => {
+    if (taskList.includes(task)) {
       const updatedtaskList = taskList.filter(
-        (taskName: string) => taskName !== taskName
+        (taskName: string) => taskName !== task
       );
       setTaskList(updatedtaskList);
-      console.log(project + " is removed");
+      console.log(task + " is removed");
     } else {
-      setTaskList([...taskList, project]);
-      console.log(project + " is added");
+      setTaskList([...taskList, task]);
+      console.log(task + " is added");
     }
   };
 
