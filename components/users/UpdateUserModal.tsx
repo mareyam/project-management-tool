@@ -26,7 +26,7 @@ const UpdateUserModal = ({ email, isOpen, onClose }: any) => {
   const { projectsList, taskList, role } = useUserStore();
 
   const { data: ProjectsData } = useProjects();
-  const { data: UserData } = useUserData();
+  const { data: UserData } = useUserData(email);
   const { data: UserProject } = useUserProjects(email);
   const { data: TasksData } = useTasks();
 

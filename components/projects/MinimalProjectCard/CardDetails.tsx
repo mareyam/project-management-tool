@@ -12,8 +12,10 @@ const CardDetails = ({ tags, title, description }: CardDetailsProps) => {
     <GridItem rowSpan={1} colSpan={8}>
       <VStack w="full" alignItems="left">
         <Flex>
-          {tags?.map((tagName: string) => (
-            <Tag mr="2">{tagName}</Tag>
+          {tags?.map((tagName: string, index: number) => (
+            <Tag key={index} mr="2">
+              {tagName}
+            </Tag>
           ))}
         </Flex>
         <Text fontWeight="600">{title}</Text>

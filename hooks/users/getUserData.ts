@@ -15,8 +15,8 @@ export const fetchUserData = async (email: string) => {
   return UserData;
 };
 
-export const useUserData = () => {
-  return useQuery<getUserDataProps>("userData", fetchUserData);
+export const useUserData = (email: string) => {
+  return useQuery(["userData", email], () => fetchUserData(email));
 };
 
 // useEffect(() => {

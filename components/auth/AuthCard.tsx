@@ -14,7 +14,7 @@ const AuthCard = () => {
         <VStack alignItems="left">
           <Heading>Start making your dreams come true</Heading>
           <Text>
-            Create an account and discover the worlds' best UI component
+            Create an account and discover the worlds best UI component
             framework.
           </Text>
           <Text>Join 10.000+ users</Text>

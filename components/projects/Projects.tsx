@@ -31,10 +31,14 @@ const Project = () => {
     }
   };
 
+  const handleDelete = () => {};
+  const updateRecord = () => {};
+  const record = "";
+
   return (
     <>
       <Text fontWeight="600" color="gray">
-        //Current projects ({ProjectsData?.length})
+        Current projects ({ProjectsData?.length})
       </Text>
       <Grid
         h="200px"
@@ -64,7 +68,13 @@ const Project = () => {
       </Grid>
 
       {selectedProjectTasks ? (
-        <TableCard data={selectedProjectTasks} columns={COLUMNS} />
+        <TableCard
+          data={selectedProjectTasks}
+          columns={COLUMNS}
+          handleDelete={handleDelete}
+          updateRecords={updateRecord}
+          record={record}
+        />
       ) : (
         <Text>Click on a project to show its details</Text>
       )}

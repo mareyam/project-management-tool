@@ -53,6 +53,7 @@ const Tags = ({ tag, tagList }: TagsProps) => {
             h="8"
             py="1"
             justifyContent="space-between"
+            key={index}
           >
             <Text isTruncated pl="2">
               {item}

@@ -65,8 +65,10 @@ const UserModal = ({ isOpen, onClose }: any) => {
             </Text>
 
             <Select placeholder="Created By" fontSize="12">
-              {UserData.map((user: any) => (
-                <option value="option1">{user.name}</option>
+              {UserData.map((user: any, index: number) => (
+                <option key={index} value="option1">
+                  {user.name}
+                </option>
               ))}
             </Select>
 
