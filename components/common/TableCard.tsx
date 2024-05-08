@@ -57,7 +57,7 @@ const TableCard = ({
           </Thead>
 
           <Tbody>
-            {/* {data?.map((row, rowIndex) => (
+            {data?.map((row: any, rowIndex: number) => (
               <Tr key={rowIndex}>
                 {columns?.map(({ key }: any) => (
                   <Td key={`${key}-${rowIndex}`}>
@@ -116,9 +116,6 @@ const TableCard = ({
                   </Td>
                 )}
               </Tr>
-            ))} */}
-            {data.map((item: any, index: number) => (
-              <Text>{item}</Text>
             ))}
           </Tbody>
         </Table>

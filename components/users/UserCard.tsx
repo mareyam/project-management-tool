@@ -9,7 +9,7 @@ import UpdateUserModal from "./UpdateUserModal";
 const UserCard = () => {
   const [email, setEmail] = useState<string>(" ");
   const [id, setId] = useState<string>(" ");
-  const { data, isLoading, error, refetch } = useUsers();
+  const { data: userData, isLoading, error, refetch } = useUsers();
   const {
     isOpen: isOpenUpdateModal,
     onOpen: onOpenUpdateModal,
@@ -25,7 +25,7 @@ const UserCard = () => {
         data: { _id: userToDelete },
       });
       refetch();
-      data.filter((user: any) => user._id !== userToDelete);
+      userData.filter((user: any) => user._id !== userToDelete);
     } catch (error) {
       console.error("Error deleting user:", error);
     }
@@ -35,11 +35,13 @@ const UserCard = () => {
     onOpenUpdateModal();
   };
 
+  console.log(userData);
+
   return (
     <>
       <Heading fontSize="16">Assign users to some task</Heading>
       <TableCard
-        data={data}
+        data={userData}
         columns={COLUMNS}
         handleDelete={handleDeleteUser}
         updateRecords={handleOpenUpdateUserModal}

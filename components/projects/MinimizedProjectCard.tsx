@@ -9,14 +9,14 @@ type MinimizedProjectCardProps = {
   title: string;
   tags: string[];
   description: string;
-  color?: string;
+  // color?: string;
   status: string;
 };
 const MinimizedProjectCard = ({
   title,
   tags,
   description,
-  color,
+  // color,
   status,
 }: MinimizedProjectCardProps) => {
   return (
@@ -28,7 +28,7 @@ const MinimizedProjectCard = ({
         templateRows="repeat(1, 1fr)"
         templateColumns="repeat(10, 1fr)"
       >
-        <CardColor color={"red.300"} />
+        {/* <CardColor color={color} /> */}
         <CardDetails
           tags={tags}
           title={title}

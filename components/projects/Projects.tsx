@@ -10,6 +10,7 @@ import { useFetchProjectData, useProjects } from "@/hooks/projects/getProjects";
 
 const Project = () => {
   const { email, setEmail } = useUserStore();
+  console.log(email);
   const { data: userData } = useUserData(email);
   const [selectedProjectTasks, setSelectedProjectTasks] = useState<any[]>([]);
 
@@ -74,7 +75,6 @@ const Project = () => {
                   title={project.title}
                   description={project.description}
                   tags={project.tags}
-                  color={project.color}
                   status={project.status}
                 />
               </GridItem>
@@ -118,5 +118,3 @@ export default Project;
 //     console.log("Project Data:", projectData);
 //   }
 // });
-
-

@@ -15,7 +15,7 @@ const Dashboard = () => {
     const userRole = localStorage.getItem("role");
     setRole(userRole ?? "admin");
     setEmail(userEmail ?? "");
-    window.location.reload();
+    // window.location.reload();
     // if (!user && !userSession) {
     //   router.push("/signin");
     // }
@@ -28,9 +28,10 @@ const Dashboard = () => {
       <br />
       <Text>User type is {role} </Text>
       <Text>email is {email}</Text>
-      {email && <Projects />}
+      <Projects />
     </>
   );
+  return <Text>hello</Text>;
 };
 
 export default Dashboard;
