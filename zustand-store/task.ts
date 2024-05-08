@@ -1,16 +1,14 @@
 import { create } from "zustand";
 
 export const STATUS = {
-  DEFAULT: "IN_PROGRESS",
   IN_PROGRESS: "IN_PROGRESS",
   PENDING: "PENDING",
   COMPLETED: "COMPLETED",
 };
 export const PRIORITY = {
-  DEFAULT: "MEDIUM",
-  LOW: "LOW",
-  MEDIUM: "MEDIUM",
-  HIGH: "HIGH",
+  LOW: "LOWw",
+  MEDIUM: "MEDIUMm",
+  HIGH: "HIGHh",
 };
 
 interface TaskProps {
@@ -19,8 +17,8 @@ interface TaskProps {
   title: string;
   description: string;
   status: string;
-  startDate: Date | null;
-  dueDate: Date | null;
+  startDate: Date | null | string;
+  dueDate: Date | null | string;
   createdBy: string;
   assignedTo: string;
   teamMembers: string[];
@@ -38,15 +36,15 @@ interface TaskProps {
   setCreatedBy: (createdBy: string) => void;
   setAssignedTo: (assignedTo: string) => void;
   setTeamMembers: (teamMembers: string[]) => void;
-  setStartDate: (startDate: Date) => void;
-  setDueDate: (dueDate: Date) => void;
+  setStartDate: (date: Date | null | string) => void;
+  setDueDate: (date: Date | null | string) => void;
   setTask: (task: string) => void;
   setTaskList: (taskList: string[]) => void;
   setTag: (tag: string) => void;
   setTagList: (tagList: string[]) => void;
   setSelectedColor: (selectedColor: number) => void;
   setColor: (color: string) => void;
-  setPriority: (color: string) => void;
+  setPriority: (priority: string) => void;
   setDependency: (tag: string) => void;
   setDependencyList: (tags: string[]) => void;
 }
@@ -55,8 +53,8 @@ export const useTaskStore = create<TaskProps>((set) => ({
   taskList: [],
   title: "",
   description: "",
-  status: STATUS.DEFAULT,
-  priority: PRIORITY.DEFAULT,
+  status: STATUS.IN_PROGRESS,
+  priority: PRIORITY.MEDIUM,
   startDate: null,
   dueDate: null,
   createdBy: "",
@@ -83,7 +81,7 @@ export const useTaskStore = create<TaskProps>((set) => ({
   setTagList: (tagList) => set({ tagList }),
   setSelectedColor: (selectedColor) => set({ selectedColor }),
   setColor: (color) => set({ color }),
-  setPriority: (color) => set({ color }),
+  setPriority: (priority) => set({ priority }),
   setDependency: (dependency) => set({ dependency }),
   setDependencyList: (dependencyList) => set({ dependencyList }),
 }));

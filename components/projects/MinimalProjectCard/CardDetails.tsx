@@ -5,9 +5,15 @@ type CardDetailsProps = {
   tags: string[];
   title: string;
   description: string;
+  status: string;
 };
 
-const CardDetails = ({ tags, title, description }: CardDetailsProps) => {
+const CardDetails = ({
+  tags,
+  title,
+  description,
+  status,
+}: CardDetailsProps) => {
   return (
     <GridItem rowSpan={1} colSpan={8}>
       <VStack w="full" alignItems="left">
@@ -20,6 +26,19 @@ const CardDetails = ({ tags, title, description }: CardDetailsProps) => {
         </Flex>
         <Text fontWeight="600">{title}</Text>
         <Text fontSize="12">{description}</Text>
+        <Text
+          fontSize="14"
+          fontWeight="600"
+          color={
+            status == "completed"
+              ? "green"
+              : status == "pending"
+              ? "red"
+              : "orange"
+          }
+        >
+          {status}
+        </Text>
       </VStack>
     </GridItem>
   );

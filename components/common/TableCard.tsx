@@ -1,3 +1,4 @@
+import { useUserStore } from "@/zustand-store/user";
 import {
   Card,
   CardBody,
@@ -10,17 +11,18 @@ import {
   TableCaption,
   Image,
   Button,
+  Text,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 type TableCardProps = {
-  // data: Record<string | number, any[]>[];
   data: { [key: string]: any }[];
   columns?: { key: keyof any; header: string }[];
   column?: string[];
   record: string;
   handleDelete?: (id: string) => void;
-  updateRecords: (email: string) => void;
+  updateRecords: (email: string, description: string) => void;
 };
 
 const TableCard = ({
@@ -31,12 +33,13 @@ const TableCard = ({
   record,
 }: TableCardProps) => {
   const router = useRouter();
+  const { role, setRole } = useUserStore();
 
-  // //todo
-  // const handleEditUser = () => {
-  //   if (router.pathname == "/team") {
-  //   }
-  // };
+  useEffect(() => {
+    setRole(localStorage.getItem("role") ?? "");
+    console.log(role);
+  }, [role]);
+
   return (
     <Card rounded="lg" bg="white">
       <CardBody>
@@ -54,7 +57,7 @@ const TableCard = ({
           </Thead>
 
           <Tbody>
-            {data?.map((row, rowIndex) => (
+            {/* {data?.map((row, rowIndex) => (
               <Tr key={rowIndex}>
                 {columns?.map(({ key }: any) => (
                   <Td key={`${key}-${rowIndex}`}>
@@ -77,31 +80,45 @@ const TableCard = ({
                     )}
                   </Td>
                 ))}
-                <Td>
-                  <Button
-                    colorScheme="green"
-                    onClick={() => {
-                      handleDelete && handleDelete(row._id);
-                    }}
-                  >
-                    delete
-                  </Button>
-                  <Button
-                    colorScheme="orange"
-                    onClick={() => {
-                      record === "selectedEmail"
-                        ? updateRecords(row.email)
-                        : record === "selectedTitle"
-                        ? updateRecords(row.title)
-                        : record === "selectedTask"
-                        ? updateRecords(row.taskName)
-                        : updateRecords(row.taskName);
-                    }}
-                  >
-                    edit
-                  </Button>
-                </Td>
+
+                {role == "user" ? (
+                  <>
+                    <Td>
+                      <Button colorScheme="red" fontSize="12">
+                        ADMIN ONLY OPERATIONS
+                      </Button>
+                    </Td>
+                  </>
+                ) : (
+                  <Td>
+                    <Button
+                      colorScheme="green"
+                      onClick={() => {
+                        handleDelete && handleDelete(row._id);
+                      }}
+                    >
+                      delete
+                    </Button>
+                    <Button
+                      colorScheme="orange"
+                      onClick={() => {
+                        record === "email"
+                          ? updateRecords(row.email, row.description)
+                          : record === "title"
+                          ? updateRecords(row.title, row.description)
+                          : record === "task"
+                          ? updateRecords(row.taskName, row.description)
+                          : updateRecords(row.taskName, row.description);
+                      }}
+                    >
+                      edit
+                    </Button>
+                  </Td>
+                )}
               </Tr>
+            ))} */}
+            {data.map((item: any, index: number) => (
+              <Text>{item}</Text>
             ))}
           </Tbody>
         </Table>

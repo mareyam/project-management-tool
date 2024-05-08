@@ -1,34 +1,26 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Checkbox, CheckboxGroup, Text } from "@chakra-ui/react";
 import { useUserStore } from "@/zustand-store/user";
-import axios from "axios";
 
 type SelectProjectProps = {
-  projectsList: Record<string, any>[];
+  projectsList: string[];
   selectedProjects: string[];
+  setSelectedProjects: (selectedProjects: string[]) => void;
 };
 
 const SelectProject = ({
   projectsList,
   selectedProjects,
+  setSelectedProjects,
 }: SelectProjectProps) => {
-  const [checkedItems, setCheckedItems] = useState(selectedProjects);
-
-  const {
-    projectsList: projectListStore,
-    setProjectsList: setProjectListStore,
-  } = useUserStore();
-
   const handleSelectProject = (project: string) => {
-    if (projectListStore.includes(project)) {
-      const updatedProjectListStore = projectListStore.filter(
+    if (selectedProjects.includes(project)) {
+      const updatedSelectedProjects = selectedProjects.filter(
         (projectName: string) => projectName !== project
       );
-      setProjectListStore(updatedProjectListStore);
-      console.log(project + " is removed");
+      setSelectedProjects(updatedSelectedProjects);
     } else {
-      setProjectListStore([...projectListStore, project]);
-      console.log(project + " is added");
+      setSelectedProjects([...selectedProjects, project]);
     }
   };
 
@@ -38,20 +30,18 @@ const SelectProject = ({
         Select Project
       </Text>
       <br />
-      <CheckboxGroup>
-        {projectsList?.map(({ title, index }: any) => (
-          <React.Fragment key={index}>
-            <Checkbox
-              value={title}
-              isChecked={selectedProjects?.includes(title)}
-              onChange={() => handleSelectProject(title)}
-            >
-              <Text fontSize="12">{title}</Text>
-            </Checkbox>
-            <br />
-          </React.Fragment>
-        ))}
-      </CheckboxGroup>
+      {projectsList?.map((project: string, index: number) => (
+        <React.Fragment key={index}>
+          <Checkbox
+            value={project}
+            isChecked={selectedProjects?.includes(project)}
+            onChange={() => handleSelectProject(project)}
+          >
+            <Text fontSize="12">{project}</Text>
+          </Checkbox>
+          <br />
+        </React.Fragment>
+      ))}
     </>
   );
 };

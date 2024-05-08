@@ -15,6 +15,7 @@ export default async function handler(req: any, res: any) {
     createdBy,
     teamMembers,
     startDate,
+    priority,
     dueDate,
     tags,
     tasks,
@@ -49,6 +50,7 @@ export default async function handler(req: any, res: any) {
       teamMembers,
       startDate,
       dueDate,
+      priority,
       tags,
       tasks,
     });

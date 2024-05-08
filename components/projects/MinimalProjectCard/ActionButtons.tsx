@@ -1,5 +1,5 @@
 import React from "react";
-import { Divider, GridItem, IconButton } from "@chakra-ui/react";
+import { Divider, GridItem, IconButton, Text } from "@chakra-ui/react";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { CgAttachment } from "react-icons/cg";
 import { SlCalender } from "react-icons/sl";
@@ -19,6 +19,7 @@ const ActionButtons = () => {
           icon={<HiOutlineDotsVertical size="20" />}
         />
       </GridItem>
+
       <GridItem w="full" colSpan={10} justifyContent="flex-end" display="flex">
         <Divider w="100%" pt="2" />
 

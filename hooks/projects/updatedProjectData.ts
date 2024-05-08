@@ -2,45 +2,39 @@ import axios from "axios";
 import { useQuery } from "react-query";
 
 export const updateProjectData = async ({
+  _id,
   title,
   description,
   status,
   startDate,
   dueDate,
   createdBy,
-  teamMembers,
   tasks,
-  tags,
+  tagList,
+  teamMembers,
 }: any) => {
   try {
     const response = await axios.put(
       "http://localhost:3000/api/project/put_project",
       {
-        // title: title,
-        // description: description,
-        // teamMembers: teamMembers,
-        // status: status,
-        // startDate: startDate,
-        // dueDate: dueDate,
-        // createdBy: createdBy,
-        // tasks: tasks,
-        // tags: tags,
+        _id,
         title,
         description,
-        teamMembers,
         status,
         startDate,
         dueDate,
         createdBy,
         tasks,
-        tags,
+        tagList,
+        teamMembers,
       }
     );
-    console.log("response is" + response.data);
+    console.log(" in updated " + tagList);
+    console.log("response is");
+    console.log(response.data);
     return response.data;
   } catch (error) {
-    console.log("Error updating project:", error);
-    console.error("Error updating project:", error);
+    console.log(" in updated ERROR " + tagList);
     throw new Error("Failed to update project");
   }
 };
@@ -48,7 +42,3 @@ export const updateProjectData = async ({
 export const useUpdatedProjectData = () => {
   return useQuery("updatedProjectData", updateProjectData);
 };
-
-// title: "m",
-// description: "desc 33",
-// teamMembers: ["cc", "dd", "ee"],

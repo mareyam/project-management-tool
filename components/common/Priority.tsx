@@ -1,17 +1,13 @@
 import React from "react";
 import { Select, Text } from "@chakra-ui/react";
-import { useTaskStore } from "@/zustand-store/task";
+import { useTaskStore, PRIORITY } from "@/zustand-store/task";
 
 type PriorityProps = {
   priority: string;
+  setPriority: (priority: string) => void;
 };
-const PRIORITY = ["low", "medium", "high"];
 
-const Priority = ({ priority }: PriorityProps) => {
-  console.log(priority);
-
-  const { setPriority } = useTaskStore();
-
+const Priority = ({ priority, setPriority }: PriorityProps) => {
   return (
     <>
       <Text as="label" textAlign="left" w="xs" fontSize="12">
@@ -23,9 +19,9 @@ const Priority = ({ priority }: PriorityProps) => {
         onChange={(event) => setPriority(event?.target.value)}
         value={priority}
       >
-        {PRIORITY?.map((priority: any, index: number) => (
-          <option key={index} value={priority}>
-            {priority}
+        {Object.keys(PRIORITY).map((key) => (
+          <option key={key} value={PRIORITY[key]}>
+            {PRIORITY[key]}
           </option>
         ))}
       </Select>

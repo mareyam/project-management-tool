@@ -2,6 +2,7 @@ import axios from "axios";
 import { useQuery } from "react-query";
 
 export const updateTaskData = async ({
+  _id,
   taskName,
   description,
   status,
@@ -9,7 +10,7 @@ export const updateTaskData = async ({
   dueDate,
   createdBy,
   assignedTo,
-  tags,
+  tagList,
   priority,
   dependencies,
 }: any) => {
@@ -17,24 +18,27 @@ export const updateTaskData = async ({
     const response = await axios.put(
       "http://localhost:3000/api/task/put_task",
       {
-        taskName: taskName,
-        description: description,
-        status: status,
-        startDate: startDate,
-        dueDate: dueDate,
-        createdBy: createdBy,
-        assignedTo: assignedTo,
-        tags,
+        _id,
+        taskName,
+        description,
+        status,
+        startDate,
+        dueDate,
+        createdBy,
+        assignedTo,
         priority,
+        tagList,
         dependencies,
       }
     );
-    console.log("response is" + response.data);
+    console.log("response is" + _id + " " + tagList);
+    console.log("response is");
+    console.log(response.data);
     return response.data;
   } catch (error) {
-    console.log("Error updating user:", error);
-    console.error("Error updating user:", error);
-    throw new Error("Failed to update user");
+    console.log(" in updated ERROR " + tagList);
+    console.log("Error updating task:", error);
+    throw new Error("Failed to update task");
   }
 };
 

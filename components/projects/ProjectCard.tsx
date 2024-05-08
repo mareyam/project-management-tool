@@ -6,9 +6,11 @@ import TableCard from "@/components/common/TableCard";
 import COLUMNS from "@/data/table-columns/project";
 import { useProjects } from "@/hooks/projects/getProjects";
 import UpdateProjectModal from "./UpdateProjectModal";
+import { deleteProjectData } from "@/hooks/projects/deleteProject";
 
 const ProjectCard = () => {
-  const [selectedTitle, setSelectedTitle] = useState<string>(" ");
+  const [title, setTitle] = useState<string>(" ");
+
   const { data, isLoading, error, refetch } = useProjects();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
@@ -32,10 +34,8 @@ const ProjectCard = () => {
     }
   };
 
-  const handleOpenUpdateProjectModal = (title: string) => {
-    setSelectedTitle(title);
-    console.log(title);
-    console.log("selected" + selectedTitle);
+  const handleOpenUpdateProjectModal = (title: string, description: string) => {
+    setTitle(title);
     onOpenUpdateModal();
   };
   return (
@@ -47,11 +47,11 @@ const ProjectCard = () => {
         columns={COLUMNS}
         handleDelete={handleDeleteProject}
         updateRecords={handleOpenUpdateProjectModal}
-        record={selectedTitle}
+        record={"title"}
       />
       {isOpenUpdateModal && (
         <UpdateProjectModal
-          title={selectedTitle}
+          title={title}
           isOpen={isOpenUpdateModal}
           onClose={onCloseUpdateModal}
         />

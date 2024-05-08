@@ -8,6 +8,7 @@ export default async function handler(req: any, res: any) {
   }
 
   const {
+    _id,
     taskName,
     description,
     status,
@@ -15,7 +16,7 @@ export default async function handler(req: any, res: any) {
     dueDate,
     createdBy,
     assignedTo,
-    tags,
+    tagList,
     dependencies,
     priority,
   } = req.body;
@@ -35,7 +36,7 @@ export default async function handler(req: any, res: any) {
       " " +
       assignedTo +
       " " +
-      tags +
+      tagList +
       " " +
       dependencies +
       " " +
@@ -44,7 +45,7 @@ export default async function handler(req: any, res: any) {
 
   try {
     await connectMongoDB();
-    const task = await Task.findOne({ taskName });
+    const task = await Task.findOne({ _id });
     console.log("task in put_task is " + task);
 
     if (!task) {
@@ -53,20 +54,32 @@ export default async function handler(req: any, res: any) {
       return;
     }
 
+    const updatedTags = [
+      ...task.tags,
+      ...tagList.filter((tag: string) => !task.tags.includes(tag)),
+    ];
+
+    const updatedDependencies = [
+      ...task.dependencies,
+      ...dependencies.filter(
+        (dependency: string) => !task.dependencies.includes(dependency)
+      ),
+    ];
+
     const updatedTask = await Task.findOneAndUpdate(
-      { taskName },
+      { _id: task._id },
       {
+        taskName,
         description,
         status,
         startDate,
         dueDate,
         createdBy,
         assignedTo,
-        tags,
-        dependencies,
+        tags: updatedTags,
+        dependencies: updatedDependencies,
         priority,
-      },
-      { new: true }
+      }
     );
     console.log(" put_task is " + updatedTask);
     res.status(200).send(updatedTask);

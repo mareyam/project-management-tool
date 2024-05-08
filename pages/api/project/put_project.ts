@@ -7,6 +7,7 @@ export default async function handler(req: any, res: any) {
     return;
   }
   const {
+    _id,
     title,
     description,
     teamMembers,
@@ -15,57 +16,57 @@ export default async function handler(req: any, res: any) {
     dueDate,
     createdBy,
     tasks,
-    tags,
+    tagList,
   } = req.body;
   console.log("Request Body:", req.body);
-  console.log(
-    title +
-      " " +
-      description +
-      " " +
-      teamMembers +
-      " " +
-      status +
-      " " +
-      startDate +
-      " " +
-      dueDate +
-      " " +
-      createdBy +
-      " " +
-      tasks +
-      " " +
-      tags
-  );
+  console.log(tagList);
 
   try {
     await connectMongoDB();
-    const project = await Project.findOne({ title });
-    console.log("project in put_project is " + project);
+    const projectId = await Project.findOne({ _id });
+    console.log("project in put_project is " + projectId);
 
-    if (!project) {
+    if (!projectId) {
       res.status(404).send({ msg: "project not found" });
-      console.log("not found in put_project is " + project);
+      console.log("not found in put_project is " + projectId);
       return;
     }
 
+    const updatedTasks = [
+      ...projectId.tasks,
+      ...tasks.filter((task: string) => !projectId.tasks.includes(task)),
+    ];
+
+    const updatedTeamMembers = [
+      ...projectId.teamMembers,
+      ...teamMembers.filter(
+        (teamMember: string) => !projectId.teamMembers.includes(teamMember)
+      ),
+    ];
+
+    const updatedTags = [
+      ...projectId.tags,
+      ...tagList.filter((tag: string) => !projectId.tags.includes(tag)),
+    ];
+
+    console.log(projectId.tagList);
+    console.log(updatedTags);
+
     const updatedProject = await Project.findOneAndUpdate(
-      { title },
-      // { $set: req.body },
+      { _id: projectId._id },
       {
-        $set: {
-          description,
-          teamMembers,
-          status,
-          startDate,
-          dueDate,
-          createdBy,
-          tasks,
-          tags,
-        },
-      },
-      { new: true }
+        title,
+        description,
+        status,
+        startDate,
+        dueDate,
+        createdBy,
+        teamMembers: updatedTeamMembers,
+        tasks: updatedTasks,
+        tags: updatedTags,
+      }
     );
+
     console.log(" put_project is " + updatedProject);
     res.status(200).send(updatedProject);
   } catch (err) {

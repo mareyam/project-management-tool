@@ -4,13 +4,12 @@ import { useTaskStore } from "@/zustand-store/task";
 
 type StatusProps = {
   status: string;
+  setStatus: (status: string) => void;
 };
 
-const STATUS = ["completed", "pending", "in progress"];
+const STATUS_OPTIONS = ["completed", "pending", "in progress"];
 
-const Status = ({ status }: StatusProps) => {
-  const { setStatus } = useTaskStore();
-
+const Status = ({ status, setStatus }: StatusProps) => {
   return (
     <>
       <Text as="label" textAlign="left" w="xs" fontSize="12">
@@ -23,9 +22,9 @@ const Status = ({ status }: StatusProps) => {
         onChange={(event) => setStatus(event?.target.value)}
         value={status}
       >
-        {STATUS.map((status: any) => (
-          <option key={status} value={status}>
-            {status}
+        {STATUS_OPTIONS.map((option) => (
+          <option key={option} value={option}>
+            {option}
           </option>
         ))}
       </Select>

@@ -1,24 +1,26 @@
-import { useUserStore } from "@/zustand-store/user";
-import { Checkbox, CheckboxGroup, Text } from "@chakra-ui/react";
-import React from "react";
+import { Checkbox, CheckboxGroup, Text, VStack } from "@chakra-ui/react";
+import React, { useEffect } from "react";
 
 type SelectTaskProps = {
-  data: Record<string, any>[];
-  selectedTask?: string[];
+  taskList?: string[];
+  selectedTask: string[];
+  setSelectedTask: (selectedTask: string[]) => void;
 };
 
-const SelectTask = ({ data, selectedTask }: SelectTaskProps) => {
-  const { taskList, setTaskList } = useUserStore();
-
+const SelectTask = ({
+  taskList,
+  selectedTask,
+  setSelectedTask,
+}: SelectTaskProps) => {
   const handleSelectTask = (task: string) => {
-    if (taskList.includes(task)) {
-      const updatedtaskList = taskList.filter(
+    if (selectedTask.includes(task)) {
+      const updatedSelectedTasks = selectedTask.filter(
         (taskName: string) => taskName !== task
       );
-      setTaskList(updatedtaskList);
+      setSelectedTask(updatedSelectedTasks);
       console.log(task + " is removed");
     } else {
-      setTaskList([...taskList, task]);
+      setSelectedTask([...selectedTask, task]);
       console.log(task + " is added");
     }
   };
@@ -26,25 +28,22 @@ const SelectTask = ({ data, selectedTask }: SelectTaskProps) => {
   return (
     <>
       <Text as="label" textAlign="left" w="xs" fontSize="12">
-        Select Task
+        Select Tasks
       </Text>
       <br />
 
-      <CheckboxGroup>
-        {data?.map(({ taskName, index }: any) => (
-          <>
-            <Checkbox
-              key={index}
-              value={taskName}
-              checked={selectedTask?.includes(taskName)}
-              onChange={() => handleSelectTask(taskName)}
-            >
-              <Text fontSize="12">{taskName}</Text>
-            </Checkbox>
-            <br />
-          </>
-        ))}
-      </CheckboxGroup>
+      {taskList?.map((task: string, index: number) => (
+        <React.Fragment key={index}>
+          <Checkbox
+            value={task}
+            checked={selectedTask?.includes(task)}
+            onChange={() => handleSelectTask(task)}
+          >
+            <Text fontSize="12">{task}</Text>
+          </Checkbox>
+          <br />
+        </React.Fragment>
+      ))}
     </>
   );
 };

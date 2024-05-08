@@ -3,8 +3,22 @@ import { Project } from "@/types/Project";
 import CardDetails from "./MinimalProjectCard/CardDetails";
 import CardColor from "./MinimalProjectCard/CardColor";
 import ActionButtons from "./MinimalProjectCard/ActionButtons";
+// ;
 
-const MinimizedProjectCard = ({ tags, title, description, color }: Project) => {
+type MinimizedProjectCardProps = {
+  title: string;
+  tags: string[];
+  description: string;
+  color?: string;
+  status: string;
+};
+const MinimizedProjectCard = ({
+  title,
+  tags,
+  description,
+  color,
+  status,
+}: MinimizedProjectCardProps) => {
   return (
     <VStack p="2" pt="4" rounded="xl" maxW="fit-content">
       <Grid
@@ -14,8 +28,13 @@ const MinimizedProjectCard = ({ tags, title, description, color }: Project) => {
         templateRows="repeat(1, 1fr)"
         templateColumns="repeat(10, 1fr)"
       >
-        <CardColor color={color} />
-        <CardDetails tags={tags} title={title} description={description} />
+        <CardColor color={"red.300"} />
+        <CardDetails
+          tags={tags}
+          title={title}
+          description={description}
+          status={status}
+        />
         <ActionButtons />
       </Grid>
     </VStack>

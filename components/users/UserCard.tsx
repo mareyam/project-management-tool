@@ -2,15 +2,14 @@ import React, { useState } from "react";
 import { Button, Heading, Text, useDisclosure } from "@chakra-ui/react";
 import axios from "axios";
 import TableCard from "@/components/common/TableCard";
-import UserModal from "./UserModal";
 import COLUMNS from "@/data/table-columns/users";
 import { useUsers } from "@/hooks/users/getUsers";
 import UpdateUserModal from "./UpdateUserModal";
 
 const UserCard = () => {
-  const [selectedEmail, setSelectedEmail] = useState<string>(" ");
+  const [email, setEmail] = useState<string>(" ");
+  const [id, setId] = useState<string>(" ");
   const { data, isLoading, error, refetch } = useUsers();
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     isOpen: isOpenUpdateModal,
     onOpen: onOpenUpdateModal,
@@ -32,27 +31,23 @@ const UserCard = () => {
     }
   };
   const handleOpenUpdateUserModal = (email: string) => {
-    setSelectedEmail(email);
-    console.log(email);
-    console.log(selectedEmail);
+    setEmail(email);
     onOpenUpdateModal();
   };
 
   return (
     <>
-      <Button onClick={onOpen}>open</Button>
       <Heading fontSize="16">Assign users to some task</Heading>
-      {isOpen && <UserModal isOpen={isOpen} onClose={onClose} />}
       <TableCard
         data={data}
         columns={COLUMNS}
         handleDelete={handleDeleteUser}
         updateRecords={handleOpenUpdateUserModal}
-        record={selectedEmail}
+        record={"email"}
       />
       {isOpenUpdateModal && (
         <UpdateUserModal
-          email={selectedEmail}
+          email={email}
           isOpen={isOpenUpdateModal}
           onClose={onCloseUpdateModal}
         />

@@ -1,22 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Checkbox, CheckboxGroup, Text } from "@chakra-ui/react";
 
 type SelectTeam = {
-  data: Record<string, any>[];
-  teamMembers: string[];
-  handleCheckboxClick: (userName: string) => void;
+  teamList: string[];
+  selectedTeam: string[];
+  setSelectedTeam: (selectedTeam: string[]) => void;
 };
 
-const SelectTeam = ({ data, teamMembers, handleCheckboxClick }: any) => {
-  const [teamList, setTeamList] = useState<string[]>([]);
-
+const SelectTeam = ({ teamList, selectedTeam, setSelectedTeam }: any) => {
   const handleSelectTeam = (user: string) => {
-    if (teamList?.includes(user)) {
-      const updatedteamList = teamList?.filter((name: string) => name !== user);
-      setTeamList(updatedteamList);
+    if (selectedTeam.includes(user)) {
+      setSelectedTeam(selectedTeam?.filter((name: string) => name !== user));
       console.log(user + " is removed");
     } else {
-      setTeamList([...teamList, user]);
+      setSelectedTeam([...selectedTeam, user]);
       console.log(user + " is added");
     }
   };
@@ -28,18 +25,17 @@ const SelectTeam = ({ data, teamMembers, handleCheckboxClick }: any) => {
       </Text>
       <br />
 
-      {teamMembers?.map((user: any, index: number) => (
-        <>
+      {teamList?.map((user: string, index: number) => (
+        <React.Fragment key={index}>
           <Checkbox
-            key={index}
-            value={user?.name}
-            checked={teamList?.includes(user?.name)}
-            onChange={() => handleSelectTeam(user?.name)}
+            value={user}
+            checked={selectedTeam.includes(user)}
+            onChange={() => handleSelectTeam(user)}
           >
-            <Text fontSize="12">{user?.name}</Text>
+            <Text fontSize="12">{user}</Text>
           </Checkbox>
           <br />
-        </>
+        </React.Fragment>
       ))}
     </>
   );

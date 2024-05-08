@@ -5,8 +5,8 @@ const projectSchema = new Schema(
   {
     title: {
       type: String,
-      required: false,
-      unique: false,
+      required: true,
+      unique: true,
     },
 
     description: {
@@ -33,34 +33,14 @@ const projectSchema = new Schema(
       type: String,
       required: false,
     },
-
-    // teamMembers: {
-    //   // type: [
-    //   //   {memberName: String,
-    //   //   },
-    //   // ],
-    //   required: false,
-    // },
-
-    teamMembers: [{ type: String }],
-
-    // tasks: {
-    //   type: [
-    //     {
-    //       taskId: String,
-    //       taskName: String,
-    //       status: String,
-    //       assignedTo: String,
-    //     },
-    //   ],
-    //   required: false,
-    // },
-
+    teamMembers: {
+      type: [String],
+      required: false,
+    },
     tasks: {
       type: [String],
       required: false,
     },
-
     tags: {
       type: [String],
       required: false,
@@ -72,3 +52,15 @@ const projectSchema = new Schema(
 const Project =
   mongoose.models.Project || mongoose.model("Project", projectSchema);
 export default Project;
+
+// tasks: {
+//   type: [
+//     {
+//       taskId: String,
+//       taskName: String,
+//       status: String,
+//       assignedTo: String,
+//     },
+//   ],
+//   required: false,
+// },

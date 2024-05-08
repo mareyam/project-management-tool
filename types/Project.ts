@@ -1,20 +1,13 @@
 export type Project = {
-  id?: number;
+  _id: string ;
   title: string;
   description: string;
-  status?: string;
-  startDate?: string;
-  dueDate?: string;
-  createdBy?: string;
-  teamMembers?: {
-    memberName: string;
-  }[];
-  tasks?: {
-    taskId: string;
-    taskName: string;
-    status: string;
-    assignedTo: string;
-  }[];
+  status: string;
+  startDate: Date;
+  dueDate: Date;
+  createdBy: string;
+  teamMembers: string[];
+  tasks: string[];
   tags: string[];
   color: string;
 };

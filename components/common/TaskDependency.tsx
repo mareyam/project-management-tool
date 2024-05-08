@@ -1,17 +1,18 @@
 import React from "react";
 import { Button, HStack, Input, Text } from "@chakra-ui/react";
-import { useTaskStore } from "@/zustand-store/task";
 
 type TaskDependencyProps = {
   dependency: string;
   dependencyList: string[];
+  setDependency: (dependency: string) => void;
+  setDependencyList: (dependency: string[]) => void;
 };
 const TaskDependency = ({
   dependency,
   dependencyList,
+  setDependency,
+  setDependencyList,
 }: TaskDependencyProps) => {
-  const { setDependency, setDependencyList } = useTaskStore();
-
   const submitTag = () => {
     if (dependency == "") return;
 

@@ -4,15 +4,32 @@ import { useQuery } from "react-query";
 type getUserDataProps = {
   projects: string[];
   tasks: string[];
+  _id: string;
+};
+
+export const fetchProjectByEmail = async (email: string) => {
+  const response = await axios.get<any>(
+    `http://localhost:3000/api/users/get_user_data?email=${email}`
+  );
+
+  console.log(response.data);
+  console.log(response.data._id);
+
+  return response.data._id;
+};
+
+export const useFetchProjectByEmail = (email: string) => {
+  return useQuery(["projectByEmail", email], () => fetchProjectByEmail(email));
 };
 
 export const fetchUserData = async (email: string) => {
   const response = await axios.get<getUserDataProps>(
     `http://localhost:3000/api/users/get_user_data?email=${email}`
   );
-  const UserData = response.data;
-  console.log(UserData);
-  return UserData;
+  console.log(response.data);
+  console.log(response.data._id);
+
+  return response.data;
 };
 
 export const useUserData = (email: string) => {

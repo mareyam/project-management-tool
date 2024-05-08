@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Modal,
   ModalOverlay,
@@ -11,9 +11,9 @@ import {
   Text,
   Input,
 } from "@chakra-ui/react";
+import { format } from "date-fns";
 import { UserData } from "@/data";
 import { useProjectStore } from "@/zustand-store/project";
-import { useTaskStore } from "@/zustand-store/task";
 import { useTagStore } from "@/zustand-store/tag";
 import {
   InputField,
@@ -24,117 +24,149 @@ import {
   ColorSelection,
   SelectTeam,
 } from "@/components/common";
-import AddTask from "../common/TaskCRUD/AddTask";
 import {
   useFetchProjectByTitle,
-  useProjects,
+  useFetchProjectData,
 } from "@/hooks/projects/getProjects";
-import { useTasks } from "@/hooks/tasks/getTasks";
+import { useTasksNames } from "@/hooks/tasks/getTasks";
 import { updateProjectData } from "@/hooks/projects/updatedProjectData";
 import { useMutation } from "react-query";
+import SelectTask from "../common/SelectTask";
+import { useUserNames } from "@/hooks/users/getUsers";
 
 type UpdateProjectModalProps = {
   title: string;
   isOpen: boolean;
   onClose: () => void;
 };
-const UpdateProjectModal = ({ title, isOpen, onClose }: any) => {
+
+const UpdateProjectModal = ({
+  title,
+  isOpen,
+  onClose,
+}: UpdateProjectModalProps) => {
   const {
     description,
-    status,
     createdBy,
-    // teamMembers,
     startDate,
     dueDate,
     selectedColor,
-    setTitle,
+    selectedTeam,
+    selectedTasks,
+    status,
+    setStatus,
+    setStartDate,
+    setDueDate,
+    setSelectedTeam,
+    setSelectedTasks,
     setDescription,
-    setTeamMembers,
+    setCreatedBy,
   } = useProjectStore();
 
-  const { task, taskList } = useTaskStore();
-  const { tag, tagList } = useTagStore();
+  const { tag, tagList, setTag, setTagList } = useTagStore();
+  const { data: _id } = useFetchProjectByTitle(title);
+  const { data: projectData } = useFetchProjectData(title);
+  const { data: taskNameList } = useTasksNames();
+  const { data: teamList } = useUserNames();
 
-  const { data: ProjectsData } = useProjects();
-  const { data: projectByTitle } = useFetchProjectByTitle(title);
-  const { data: TasksData } = useTasks();
-
-  const teamMembers = [{ name: "team1" }, { name: "team2" }, { name: "team3" }];
   const mutation = useMutation(updateProjectData);
-
   const handleUpdate = async () => {
     try {
       await mutation.mutateAsync({
+        _id,
         title,
         description,
         status,
         startDate,
         dueDate,
         createdBy,
-        teamMembers,
-        tasks: taskList,
-        tags: tagList,
+        tasks: selectedTasks,
+        tagList,
+        teamMembers: selectedTeam,
       });
-      console.log("done");
+      window.location.reload();
     } catch (e) {
       console.error("Error updating title:", e);
-      console.log("not done");
     }
   };
 
-  // const handleCheckboxClick = (userName: string) => {
-  //   if (teamMembers.includes(userName)) {
-  //     const updatedTeamMembers = teamMembers.filter(
-  //       (member: string) => member !== userName
-  //     );
-  //     setTeamMembers(updatedTeamMembers);
-  //     console.log(userName + " is removed");
-  //   } else {
-  //     setTeamMembers([...teamMembers, userName]);
-  //     console.log(userName + " is added");
-  //   }
-  // };
+  useEffect(() => {
+    if (projectData) {
+      setDescription(projectData?.description);
+
+      if (projectData.startDate) {
+        const formattedStartDate = format(projectData.startDate, "yyyy-MM-dd");
+        setStartDate(formattedStartDate);
+      }
+
+      if (projectData.dueDate) {
+        const formattedDueDate = format(projectData.dueDate, "yyyy-MM-dd");
+        setStartDate(formattedDueDate);
+      }
+
+      const formattedStartDate = format(Date.now(), "yyyy-MM-dd");
+      const formattedDueDate = format(Date.now(), "yyyy-MM-dd");
+
+      setStartDate(formattedStartDate);
+      setDueDate(formattedDueDate);
+
+      setStatus(projectData?.status);
+      setSelectedTeam(projectData?.teamMembers);
+      setSelectedTasks(projectData?.tasks);
+      setTag(projectData?.tags);
+      setCreatedBy(projectData?.createdBy);
+    }
+  }, [projectData]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Update {title} Project</ModalHeader>
+        <ModalHeader>Update {_id} Project</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <Text as="label" textAlign="left" w="xs" fontSize="12">
             title
           </Text>
-          <Input placeholder="title" value={title} />
-
-          {/* <InputField
-            placeholder="title"
-            label="Title"
-            field={title}
-            setField={setTitle}
-          /> */}
-
+          <Input placeholder="title" value={projectData?.title} />
           <InputField
             placeholder="description"
             label="Description"
             field={description}
             setField={setDescription}
           />
-          <Status status={status} />
-          <DateSelection startDate={startDate} dueDate={dueDate} />
-          <CreatedBy createdBy={createdBy} data={UserData} />
-          <SelectTeam
+          <Status status={status} setStatus={setStatus} />
+          <DateSelection
+            setStartDate={setStartDate}
+            setDueDate={setDueDate}
+            startDate={startDate}
+            dueDate={dueDate}
+          />
+          <CreatedBy
+            setCreatedBy={setCreatedBy}
+            createdBy={createdBy}
             data={UserData}
-            teamMembers={teamMembers}
-            // handleCheckboxClick={handleCheckboxClick}
           />
 
-          <Text as="label" textAlign="left" w="xs" fontSize="12">
-            Add tasks
-          </Text>
-          <br />
-          <AddTask task={task} taskList={taskList} />
-          <Tags tag={tag} tagList={tagList} />
+          <SelectTeam
+            teamList={teamList}
+            selectedTeam={selectedTeam}
+            setSelectedTeam={setSelectedTeam}
+          />
+
+          <SelectTask
+            taskList={taskNameList}
+            selectedTask={selectedTasks}
+            setSelectedTask={setSelectedTasks}
+          />
+
+          <Tags
+            setTag={setTag}
+            setTagList={setTagList}
+            tag={tag}
+            tagList={tagList}
+          />
+
           <Text as="label" textAlign="left" w="xs" fontSize="12">
             Add color code
           </Text>
@@ -143,7 +175,8 @@ const UpdateProjectModal = ({ title, isOpen, onClose }: any) => {
         <ModalFooter>
           <Button
             onClick={() => {
-              handleUpdate(); // onClose();
+              handleUpdate();
+              onClose();
             }}
             colorScheme="blue"
             mr={3}
@@ -158,6 +191,18 @@ const UpdateProjectModal = ({ title, isOpen, onClose }: any) => {
 
 export default UpdateProjectModal;
 
+// const handleCheckboxClick = (userName: string) => {
+//   if (teamMembers.includes(userName)) {
+//     const updatedTeamMembers = teamMembers.filter(
+//       (member: string) => member !== userName
+//     );
+//     setTeamMembers(updatedTeamMembers);
+//     console.log(userName + " is removed");
+//   } else {
+//     setTeamMembers([...teamMembers, userName]);
+//     console.log(userName + " is added");
+//   }
+// };
 // console.log(
 //   mutation.mutateAsync({
 //     title,

@@ -5,11 +5,10 @@ import { useProjectStore } from "@/zustand-store/project";
 type CreateByProps = {
   createdBy: string;
   data: Record<string, any>[];
+  setCreatedBy: (createdBy: string) => void;
 };
-const CreatedBy = ({ createdBy, data }: CreateByProps) => {
-  const { setCreatedBy } = useProjectStore();
+const CreatedBy = ({ createdBy, data, setCreatedBy }: CreateByProps) => {
   console.log(createdBy);
-
   return (
     <>
       <Text as="label" textAlign="left" w="xs" fontSize="12">

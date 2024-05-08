@@ -5,10 +5,11 @@ import { useTagStore } from "@/zustand-store/tag";
 type TagsProps = {
   tag: string;
   tagList: string[];
+  setTag: (tag: string) => void;
+  setTagList: (tagList: string[]) => void;
 };
-const Tags = ({ tag, tagList }: TagsProps) => {
-  const { setTag, setTagList } = useTagStore();
-
+const Tags = ({ tag, tagList, setTag, setTagList }: TagsProps) => {
+  console.log(tag + " amd " + tagList);
   const submitTag = () => {
     if (tag == "") return;
 

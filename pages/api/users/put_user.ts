@@ -7,42 +7,39 @@ export default async function handler(req: any, res: any) {
     return;
   }
 
-  const { email, projects, tasks, role } = req.body;
+  const { _id, email, projects, tasks, role } = req.body;
+
   console.log("Request Body:", req.body);
-  console.log(email + " " + projects + " " + tasks + " " + role);
+  console.log(_id + " " + email + " " + projects + " " + tasks + " " + role);
 
   try {
     await connectMongoDB();
-    const user = await User.findOne({ email });
-    console.log("user in put_user is " + user);
+    const userId = await User.findOne({ _id });
+    console.log("user in put_user is " + userId);
 
-    if (!user) {
+    if (!userId) {
       res.status(404).send({ msg: "User not found" });
-      console.log("not found in put_user is " + user);
+      console.log("not found in put_user is " + userId);
       return;
     }
 
-    // const updatedProjects = [
-    //   ...user.projects,
-    //   ...projects.filter((project: string) => !user.projects.includes(project)),
-    // ];
-    // const updatedTasks = [
-    //   ...user.tasks,
-    //   ...tasks.filter((task: string) => !user.tasks.includes(task)),
-    // ];
-
-    // const updatedUser = await User.findOneAndUpdate(
-    //   { email },
-    //   { $set: { projects: updatedProjects, tasks: updatedTasks } },
-    //   { new: true }
-    // );
+    const updatedProjects = [
+      ...userId.projects,
+      ...projects.filter(
+        (project: string) => !userId.projects.includes(project)
+      ),
+    ];
+    const updatedTasks = [
+      ...userId.tasks,
+      ...tasks.filter((task: string) => !userId.tasks.includes(task)),
+    ];
 
     const updatedUser = await User.findOneAndUpdate(
-      { email },
-      // { projects: "projects", tasks: "tasks" }
-      { $set: { projects, tasks, role } },
+      { _id: userId._id },
+      { $set: { projects: updatedProjects, tasks: updatedTasks } },
       { new: true }
     );
+
     console.log(" put_user is " + updatedUser);
     res.status(200).send(updatedUser);
   } catch (err) {

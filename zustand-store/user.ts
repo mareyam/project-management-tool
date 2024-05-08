@@ -6,15 +6,15 @@ interface UserProps {
   password: string;
   id: string;
   allEmails: string[];
-  projectsList: string[];
+  selectedProjects: string[];
   taskList: string[];
 
-  setRole: (state: string) => void;
+  setRole: (role: string) => void;
   setPassword: (state: string) => void;
   setEmail: (state: string) => void;
   setId: (state: string) => void;
   setAllEmails: (emails: string[]) => void;
-  setProjectsList: (projectsList: string[]) => void;
+  setSelectedProjects: (selectedProjects: string[]) => void;
   setTaskList: (taskList: string[]) => void;
 }
 export const useUserStore = create<UserProps>()((set) => ({
@@ -23,13 +23,14 @@ export const useUserStore = create<UserProps>()((set) => ({
   id: "",
   password: "",
   allEmails: [],
-  projectsList: [],
+  selectedProjects: [],
   taskList: [],
   setRole: (role: string) => set({ role }),
   setPassword: (password: string) => set({ password }),
   setEmail: (email: string) => set({ email }),
   setId: (id: string) => set({ id }),
   setAllEmails: (allEmails: string[]) => set({ allEmails }),
-  setProjectsList: (projectsList: string[]) => set({ projectsList }),
+  setSelectedProjects: (selectedProjects: string[]) =>
+    set({ selectedProjects }),
   setTaskList: (taskList: string[]) => set({ taskList }),
 }));

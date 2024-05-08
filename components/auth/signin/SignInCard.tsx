@@ -15,7 +15,8 @@ const SignInCard = () => {
   const [signInWithEmailAndPassword] = useSignInWithEmailAndPassword(auth);
   const router = useRouter();
 
-  const { role, email, setEmail, password, setPassword } = useUserStore();
+  const { role, setRole, email, setEmail, password, setPassword } =
+    useUserStore();
 
   const handleSignIn = async () => {
     try {
@@ -73,7 +74,7 @@ const SignInCard = () => {
           </Flex>
           <AuthButton handleAction={handleSignIn} />
           <GoogleAuthButton title="Sign in with Google" />
-          <RoleSelection />
+          <RoleSelection role={role} setRole={setRole} />
 
           <Text color="red" fontSize="20">
             {error}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Modal,
   ModalOverlay,
@@ -13,43 +13,59 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import SelectProject from "../common/SelectProject";
-import { useProjects } from "@/hooks/projects/getProjects";
+import { useProjects, useProjectsNames } from "@/hooks/projects/getProjects";
 import SelectTask from "../common/SelectTask";
-import { useTasks } from "@/hooks/tasks/getTasks";
+import { useTasks, useTasksNames } from "@/hooks/tasks/getTasks";
 import { useUserStore } from "@/zustand-store/user";
-import { useUserData } from "@/hooks/users/getUserData";
+import { useFetchProjectByEmail, useUserData } from "@/hooks/users/getUserData";
 import { useUserProjects } from "@/hooks/users/getUsers";
 import { updateUserData } from "@/hooks/users/updateUserData";
 import { useMutation } from "react-query";
+import { useProjectStore } from "@/zustand-store/project";
 
 const UpdateUserModal = ({ email, isOpen, onClose }: any) => {
-  const { projectsList, taskList, role } = useUserStore();
+  const { selectedTasks, setSelectedTasks } = useProjectStore();
+  const { selectedProjects, setSelectedProjects, role, setRole } =
+    useUserStore();
 
-  const { data: ProjectsData } = useProjects();
-  const { data: UserData } = useUserData(email);
-  const { data: UserProject } = useUserProjects(email);
-  const { data: TasksData } = useTasks();
+  const { data: taskNameList } = useTasksNames();
+  const { data: projectNames } = useProjectsNames();
+  console.log(projectNames + "<===and===>" + taskNameList);
+
+  const { data: userData } = useUserData(email);
+  const { data: _id } = useFetchProjectByEmail(email);
 
   const mutation = useMutation(updateUserData);
   const handleUpdate = async () => {
     try {
       await mutation.mutateAsync({
+        _id,
         email,
+        projects: selectedProjects,
+        tasks: selectedTasks,
         role,
-        projectsList,
-        taskList,
       });
+      window.location.reload();
     } catch (e) {
       console.error("Error updating user:", e);
     }
   };
+
+  useEffect(() => {
+    if (userData) {
+      setSelectedTasks(userData?.tasks);
+      setSelectedProjects(userData?.projects);
+      setRole(localStorage.getItem("role") ?? "admin");
+      console.log(role);
+    }
+  }, [userData]);
 
   return (
     <>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>update {email} details</ModalHeader>
+          <ModalHeader>update {_id} details</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <Text as="label" textAlign="left" w="xs" fontSize="12">
@@ -57,11 +73,17 @@ const UpdateUserModal = ({ email, isOpen, onClose }: any) => {
             </Text>
             <Input placeholder="email" value={email} />
             <SelectProject
-              projectsList={ProjectsData}
-              selectedProjects={UserProject}
+              projectsList={projectNames}
+              selectedProjects={selectedProjects}
+              setSelectedProjects={setSelectedProjects}
             />
             <br />
-            <SelectTask selectedTask={taskList} data={TasksData} />
+            <SelectTask
+              taskList={taskNameList}
+              selectedTask={selectedTasks}
+              setSelectedTask={setSelectedTasks}
+            />
+
             <br />
           </ModalBody>
           <ModalFooter>
@@ -69,7 +91,10 @@ const UpdateUserModal = ({ email, isOpen, onClose }: any) => {
               colorScheme="blue"
               mr={3}
               disabled={mutation.isLoading}
-              onClick={handleUpdate}
+              onClick={() => {
+                handleUpdate();
+                onClose();
+              }}
             >
               {mutation.isLoading ? "Updating..." : "Update User"}
             </Button>

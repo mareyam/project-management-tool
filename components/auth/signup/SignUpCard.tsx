@@ -30,7 +30,8 @@ const SignUpCard = () => {
     useCreateUserWithEmailAndPassword(auth);
 
   const router = useRouter();
-  const { role, email, password, setEmail, setPassword } = useUserStore();
+  const { role, setRole, email, password, setEmail, setPassword } =
+    useUserStore();
 
   const handleSignUp = async () => {
     const res = await createUserWithEmailAndPassword(email, password);
@@ -39,12 +40,12 @@ const SignUpCard = () => {
       axios
         .post(`/api/users/set_user`, { email, role })
         .then((res) => {
-          console.log("response is" + res);
+          console.log("response is" + res.data);
+          console.log(email + " " + role);
         })
         .catch((err) => console.log("err is" + err));
       setError("sign in successful");
       router.push("/signin");
-      console.log(email + " " + role);
     } catch (e) {
       setError("Sign-in failed: Invalid email or password");
       console.error("error is" + e);
@@ -91,7 +92,7 @@ const SignUpCard = () => {
           </Flex>
           <AuthButton handleAction={handleSignUp} />
           <GoogleAuthButton title="Sign up with Google" />
-          <RoleSelection />
+          <RoleSelection role={role} setRole={setRole} />
         </VStack>
       </GridItem>
     </Grid>

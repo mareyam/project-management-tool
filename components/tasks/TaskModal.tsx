@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Modal,
   ModalOverlay,
@@ -23,6 +23,10 @@ import {
   CreatedBy,
   TaskDependency,
 } from "@/components/common";
+import Priority from "../common/Priority";
+import { useMutation } from "react-query";
+import useTaskMutation from "@/hooks/tasks/postTask";
+import useErrorSuccess from "@/hooks/misc/useErrorSuccess";
 
 type TaskModalProps = { isOpen: boolean; onClose: () => void };
 const TaskModal = ({ isOpen, onClose }: TaskModalProps) => {
@@ -30,39 +34,62 @@ const TaskModal = ({ isOpen, onClose }: TaskModalProps) => {
     task,
     description,
     status,
-    createdBy,
-    startDate,
-    dueDate,
     assignedTo,
     dependency,
     dependencyList,
+    priority,
     setTask,
+    setStatus,
     setDescription,
+    setAssignedTo,
+    setDependency,
+    setDependencyList,
+    setPriority,
+    createdBy,
+    setCreatedBy,
+    startDate,
+    dueDate,
+    setStartDate,
+    setDueDate,
   } = useTaskStore();
-  const { tag, tagList } = useTagStore();
+  const { tag, tagList, setTag, setTagList } = useTagStore();
+  const [showError, setShowError] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
+  const { addTask } = useTaskMutation();
   const handleAddTask = async () => {
-    try {
-      axios
-        .post(`/api/task/set_task`, {
-          taskName: task,
-          description,
-          status,
-          assignedTo,
-          startDate,
-          dueDate,
-          createdBy,
-          tags: tagList,
-          // dependencies: dependencyList,
-        })
+    const postData = {
+      taskName: task,
+      description,
+      status,
+      assignedTo,
+      startDate: startDate ? startDate : Date.now(),
+      dueDate: dueDate ? dueDate : Date.now(),
+      createdBy,
+      tags: tagList,
+      priority,
+      dependencies: dependencyList,
+    };
 
-        .then((res) => {
-          console.log("response is " + res.data);
-        })
-        .catch((err) => console.log("err is" + err));
-    } catch (e) {
-      console.error("error is" + e);
+    try {
+      const data = await addTask(postData);
+      console.log("Data posted successfully:", data);
+      window.location.reload();
+    } catch (error) {
+      console.error("Error posting data:", error);
     }
+  };
+
+  const handleTaskPostMessage = () => {
+    useErrorSuccess(
+      task,
+      handleAddTask,
+      onClose,
+      showSuccess,
+      showError,
+      setShowError,
+      setShowSuccess
+    );
   };
 
   return (
@@ -86,12 +113,36 @@ const TaskModal = ({ isOpen, onClose }: TaskModalProps) => {
             setField={setDescription}
           />
           <br />
-          <Status status={status} />
-          <DateSelection startDate={startDate} dueDate={dueDate} />
-          <CreatedBy createdBy={createdBy} data={UserData} />
-          <AssignedTo assignedTo={assignedTo} data={UserData} />
-          <Tags tag={tag} tagList={tagList} />
+          <Status status={status} setStatus={setStatus} />
+          <DateSelection
+            setStartDate={setStartDate}
+            setDueDate={setDueDate}
+            startDate={startDate}
+            dueDate={dueDate}
+          />
+          <CreatedBy
+            setCreatedBy={setCreatedBy}
+            createdBy={createdBy}
+            data={UserData}
+          />
+
+          <AssignedTo
+            assignedTo={assignedTo}
+            setAssignedTo={setAssignedTo}
+            data={UserData}
+          />
+          <Priority priority={priority} setPriority={setPriority} />
+
+          <Tags
+            setTag={setTag}
+            setTagList={setTagList}
+            tag={tag}
+            tagList={tagList}
+          />
+
           <TaskDependency
+            setDependency={setDependency}
+            setDependencyList={setDependencyList}
             dependency={dependency}
             dependencyList={dependencyList}
           />
@@ -101,10 +152,32 @@ const TaskModal = ({ isOpen, onClose }: TaskModalProps) => {
         </ModalBody>
 
         <ModalFooter>
-          <Button colorScheme="blue" mr={3} onClick={handleAddTask}>
+          <Button colorScheme="blue" mr={3} onClick={handleTaskPostMessage}>
             Done
           </Button>
         </ModalFooter>
+        {showError && (
+          <Text
+            w="full"
+            fontSize="20"
+            fontWeight="800"
+            textAlign="center"
+            color="red.500"
+          >
+            Add task details
+          </Text>
+        )}
+        {showSuccess && (
+          <Text
+            w="full"
+            fontSize="20"
+            fontWeight="800"
+            textAlign="center"
+            color="green.500"
+          >
+            Project uploaded successfully
+          </Text>
+        )}
       </ModalContent>
     </Modal>
   );
@@ -118,3 +191,29 @@ export default TaskModal;
             setSelectedColor={setSelectedColor}
             selectedColor={selectedColor}
           /> */
+
+// const handleAddTask = async () => {
+//     try {
+//       axios
+//         .post(`/api/task/set_task`, {
+//           taskName: task,
+//           description,
+//           status,
+//           assignedTo,
+//           startDate: startDate ? startDate : Date.now(),
+//           dueDate: dueDate ? dueDate : Date.now(),
+//           createdBy,
+//           tags: tagList,
+//           priority,
+//           dependencies: dependencyList,
+//         })
+
+//         .then((res) => {
+//           console.log("response is " + res.data);
+//         })
+//         .catch((err) => console.log("err is" + err));
+//     } catch (e) {
+//       console.error("error is" + e);
+//     }
+//   };
+//

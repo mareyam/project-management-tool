@@ -1,16 +1,19 @@
 import React from "react";
 import { Input, Text } from "@chakra-ui/react";
-import { AnyAaaaRecord } from "dns";
-import { useProjectStore } from "@/zustand-store/project";
 
 type DateSelectionProps = {
-  startDate: Date | null;
-  dueDate: Date | null;
+  startDate: Date | null | string | any;
+  dueDate: Date | null | string | any;
+  setStartDate: (startDate: Date | null | string | any) => void;
+  setDueDate: (dueDate: Date | null | string | any) => void;
 };
 
-const DateSelection = ({ startDate, dueDate }: DateSelectionProps) => {
-  const { setStartDate, setDueDate } = useProjectStore();
-
+const DateSelection = ({
+  startDate,
+  dueDate,
+  setStartDate,
+  setDueDate,
+}: DateSelectionProps) => {
   return (
     <>
       <Text as="label" textAlign="left" w="xs" fontSize="12">
@@ -19,8 +22,9 @@ const DateSelection = ({ startDate, dueDate }: DateSelectionProps) => {
       <Input
         placeholder="Select Start Date"
         size="md"
-        type="datetime-local"
+        type="date"
         fontSize="12"
+        value={startDate ? startDate : Date.now()}
         onChange={(e: any) => setStartDate(e.target.value)}
       />
       <Text as="label" textAlign="left" w="xs" fontSize="12">
@@ -30,7 +34,8 @@ const DateSelection = ({ startDate, dueDate }: DateSelectionProps) => {
         placeholder="Select Due Date"
         fontSize="12"
         size="md"
-        type="datetime-local"
+        type="date"
+        value={dueDate ? dueDate : Date.now()}
         onChange={(e: any) => setDueDate(e.target.value)}
       />
     </>

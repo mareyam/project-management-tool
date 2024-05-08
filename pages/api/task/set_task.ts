@@ -17,6 +17,8 @@ export default async function handler(req: any, res: any) {
     dueDate,
     createdBy,
     tags,
+    priority,
+    dependencies,
   } = req.body;
   console.log(
     description,
@@ -25,7 +27,9 @@ export default async function handler(req: any, res: any) {
     startDate,
     dueDate,
     createdBy,
-    tags
+    tags,
+    dependencies,
+    priority
   );
   try {
     await connectMongoDB();
@@ -38,6 +42,8 @@ export default async function handler(req: any, res: any) {
       dueDate,
       createdBy,
       tags,
+      dependencies,
+      priority,
     });
     console.log(
       taskName +
@@ -54,9 +60,11 @@ export default async function handler(req: any, res: any) {
         " " +
         createdBy +
         " " +
-        tags
-      // " " +
-      // dependencies
+        tags +
+        " " +
+        dependencies +
+        " " +
+        priority
     );
     return res.send("Data saved");
   } catch (err) {

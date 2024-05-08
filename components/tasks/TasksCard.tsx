@@ -8,7 +8,7 @@ import { useTasks } from "@/hooks/tasks/getTasks";
 import UpdateTaskModal from "./UpdateTaskModal";
 
 const TasksCard = () => {
-  const [selectedTask, setSelectedTask] = useState<string>(" ");
+  const [task, setTask] = useState<string>(" ");
   const { data, isLoading, error, refetch } = useTasks();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
@@ -32,30 +32,29 @@ const TasksCard = () => {
     }
   };
 
-  const handleOpenUpdateTaskModal = (email: string) => {
-    setSelectedTask(email);
-    console.log(email);
-    console.log(selectedTask);
+  const handleOpenUpdateTaskModal = (task: string) => {
+    setTask(task);
+
     onOpenTaskModal();
   };
   return (
     <>
       <Button onClick={onOpen}>open</Button>
+      {isOpen && <TaskModal isOpen={isOpen} onClose={onClose} />}
       <TableCard
         data={data}
         columns={COLUMNS}
         handleDelete={handleDeleteTask}
         updateRecords={handleOpenUpdateTaskModal}
-        record={selectedTask}
+        record={"task"}
       />
       {isOpenTaskModal && (
         <UpdateTaskModal
-          taskName={selectedTask}
+          taskName={task}
           isOpen={isOpenTaskModal}
           onClose={onCloseTaskModal}
         />
       )}
-      {/* {isOpen && <TaskModal isOpen={isOpen} onClose={onClose} />} */}
     </>
   );
 };

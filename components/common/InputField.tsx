@@ -14,6 +14,8 @@ const InputField = ({
   placeholder,
   setField,
 }: InputFieldProps) => {
+  console.log(field);
+
   return (
     <>
       <Text as="label" textAlign="left" w="xs" fontSize="12">
